@@ -3,8 +3,10 @@
   <head>
     <title>Socket.IO chat</title>
     <style>
+			input {font-size: 18px; }
+			body {font-size: 18px; }
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 16px Helvetica, Arial; }
+      body { font: 18px Helvetica, Arial; }
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
@@ -15,16 +17,19 @@
     </style>
   </head>
   <body>
-    <ul id="messages"></ul>
-    <ul id="rooms">
-      おなまえ：<input id="name" autocomplete="off" /> <br />
-      <button onClick="login($('#name').val())">ログイン</button> <br />
+		<h1>いらっしゃい</h1>
 
-     <input id="room" autocomplete="off" /> <br />
-      <button onClick="join('room1')">Room1</button> <br />
-      <button onClick="join('room2')">Room2</button> <br />
-      <button onClick="join($('#room').val())">さんか</button> <br />
-     </ul>
+		<h2>なまえ</h2>
+
+		<input id="name" autocomplete="off" />
+
+		<h2>さんかするへやを選ぶ</h2>
+		<% var names = Object.keys( rooms ); %>
+		<% for(var i = 0; i < names.length; i++) { %>
+			<input type="radio" name="room" value="<%= names[i] %>"><%= names[i] %></input> <br />
+		<% } %>
+      <button onClick="login()">ログイン</button> <br />
+
     <textarea id="script"></textarea>
     <button onClick="doScript();">実行</button>
     <textarea id="result"></textarea>
@@ -50,12 +55,11 @@
         });
       });
 	    // login
-	    function login(name) {
-        socket.emit('login', name);
-	    };
-	    // join
-	    function join(room) {
-        socket.emit('join', room);
+	    function login() {
+			var name = $('#name').val();
+			var room = $('input[name=room]:checked').val();
+				window.open('/client' + '?name='+name+ '&room='+room);
+        socket.emit('login', {name: name, room: room, role: 'admin'} );
 	    };
 	    // script送信
 	    function doScript() {
@@ -65,56 +69,15 @@
 	    };
 	    // script受信＆実行
 	    socket.on('script', function(s) {
-				v//ar doGlobal = eval;
+				//var doGlobal = eval;
         //var r = doGlobal(s);
-				$('#code').text(s);
-				$('#code').removeClass("prettyprinted");
+				$('#messages').append( $('<pre>').addClass("prettyprint").text(s).appendTo($('<li>')) );
+				// .append('<pre>').addClass("prettyprint").text(s);
 				PR.prettyPrint();
-				//$('#result').val('clear');
-				//$('#result').text(r);
 	    });
 
     </script>
-
-    <pre id="code" class="prettyprint">
-      var socket = io();
-      $(function () {
-        // 送信
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        // 受信
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-	    // login
-	    function login(name) {
-        socket.emit('login', name);
-	    };
-	    // join
-	    function join(room) {
-        socket.emit('join', room);
-	    };
-	    // script送信
-	    function doScript() {
-				var s = $('#script').val();
-        socket.emit('script', s);
-				$('#result').val('');
-	    };
-	    // script受信＆実行
-	    socket.on('script', function(s) {
-				var doGlobal = eval;
-        var r = doGlobal(s);
-				$('#result').val('clear');
-				$('#result').val(r);
-	    });
-
-    </pre>
-
+    <ul id="messages"></ul>
 
   </body>
 </html>

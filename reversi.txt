@@ -1,0 +1,47 @@
+$("body").empty();
+$("<div id='canvas' style='position:absolute;top:50px;left:50px'></div").appendTo("body");
+for (var x = 0; x < 5; x++) {
+	for (var y = 0; y < 5; y++) {
+			var w = 60;
+			var d = $('<div class="" style="border:1px"></div>');
+			d.css("position", "absolute");
+			d.css("border-style", "solid");
+			d.css("top", y * w);
+			d.css("left", x * w);
+			d.css("width", w);
+			d.css("height", w);
+			d.appendTo("#canvas");
+	}
+}
+var id = 0;
+for (var x = 0; x < 5; x++) {
+	for (var y = 0; y < 5; y++) {
+			var w = 30;
+			var d = $('<div class="drag" style="border:1px"></div>');
+			d.attr('id', 'mov'+ ++id);
+			d.css("position", "absolute");
+			d.css("border-style", "solid");
+			d.css("top", y * w + 500);
+			d.css("left", x * w);
+			d.css("width", w);
+			d.css("height", w);
+			d.appendTo("#canvas");
+	}
+}
+$(".drag").draggable({
+	drag: function( event, ui ) {
+		var s = "$('#"+ ui.helper[0].id +"').";
+		s += "css('top',"+ ui.position.top +").";
+		s += "css('left',"+ ui.position.left +");";
+		socket.emit('script', s);
+ },
+	stop: function( event, ui ) {
+		var s = "$('#"+ ui.helper[0].id +"').";
+		s += "css('top',"+ ui.position.top +").";
+		s += "css('left',"+ ui.position.left +");";
+		socket.emit('script', s);
+ }
+
+});
+
+
