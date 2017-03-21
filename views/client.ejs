@@ -28,17 +28,9 @@
     <script>
       var socket = io();
       $(function () {
-        // 送信
-				login( {name: "<%= name %>", room: "<%= room %>" });
+        // login
+				socket.emit('login', {name: "<%= name %>", room: "<%= room %>" });
       });
-	    // login
-	    function login(name) {
-        socket.emit('login', name);
-	    };
-	    // join
-	    function join(room) {
-        socket.emit('join', room);
-	    };
 	    // script受信＆実行
 	    socket.on('script', function(s) {
 				var doGlobal = eval;
