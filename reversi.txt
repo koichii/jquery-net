@@ -1,3 +1,4 @@
+//ƒIƒZƒ‚Ìƒfƒ‚
 $("body").empty();
 $("<div id='canvas' style='position:absolute;top:50px;left:50px'></div").appendTo("body");
 for (var x = 0; x < 5; x++) {
