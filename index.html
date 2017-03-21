@@ -4,7 +4,7 @@
     <title>Socket.IO chat</title>
     <style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
+      body { font: 16px Helvetica, Arial; }
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
       form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
       form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
@@ -16,24 +16,105 @@
   </head>
   <body>
     <ul id="messages"></ul>
+    <ul id="rooms">
+      おなまえ：<input id="name" autocomplete="off" /> <br />
+      <button onClick="login($('#name').val())">ログイン</button> <br />
+
+     <input id="room" autocomplete="off" /> <br />
+      <button onClick="join('room1')">Room1</button> <br />
+      <button onClick="join('room2')">Room2</button> <br />
+      <button onClick="join($('#room').val())">さんか</button> <br />
+     </ul>
+    <textarea id="script"></textarea>
+    <button onClick="doScript();">実行</button>
+    <textarea id="result"></textarea>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
     </form>
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
     <script>
+      var socket = io();
       $(function () {
-        var socket = io();
+        // 送信
         $('form').submit(function(){
           socket.emit('chat message', $('#m').val());
           $('#m').val('');
           return false;
         });
+        // 受信
         socket.on('chat message', function(msg){
           $('#messages').append($('<li>').text(msg));
           window.scrollTo(0, document.body.scrollHeight);
         });
       });
+	    // login
+	    function login(name) {
+        socket.emit('login', name);
+	    };
+	    // join
+	    function join(room) {
+        socket.emit('join', room);
+	    };
+	    // script送信
+	    function doScript() {
+				var s = $('#script').val();
+        socket.emit('script', s);
+				$('#result').val('');
+	    };
+	    // script受信＆実行
+	    socket.on('script', function(s) {
+				var doGlobal = eval;
+        var r = doGlobal(s);
+				$('#code').text(s);
+				$('#code').removeClass("prettyprinted");
+				PR.prettyPrint();
+				//$('#result').val('clear');
+				$('#result').text(r);
+	    });
+
     </script>
+
+    <pre id="code" class="prettyprint">
+      var socket = io();
+      $(function () {
+        // 送信
+        $('form').submit(function(){
+          socket.emit('chat message', $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+        // 受信
+        socket.on('chat message', function(msg){
+          $('#messages').append($('<li>').text(msg));
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+      });
+	    // login
+	    function login(name) {
+        socket.emit('login', name);
+	    };
+	    // join
+	    function join(room) {
+        socket.emit('join', room);
+	    };
+	    // script送信
+	    function doScript() {
+				var s = $('#script').val();
+        socket.emit('script', s);
+				$('#result').val('');
+	    };
+	    // script受信＆実行
+	    socket.on('script', function(s) {
+				var doGlobal = eval;
+        var r = doGlobal(s);
+				$('#result').val('clear');
+				$('#result').val(r);
+	    });
+
+    </pre>
+
+
   </body>
 </html>
