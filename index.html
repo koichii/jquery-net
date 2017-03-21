@@ -65,13 +65,13 @@
 	    };
 	    // script受信＆実行
 	    socket.on('script', function(s) {
-				var doGlobal = eval;
-        var r = doGlobal(s);
+				v//ar doGlobal = eval;
+        //var r = doGlobal(s);
 				$('#code').text(s);
 				$('#code').removeClass("prettyprinted");
 				PR.prettyPrint();
 				//$('#result').val('clear');
-				$('#result').text(r);
+				//$('#result').text(r);
 	    });
 
     </script>

@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "description": "jquery and net on socket.io",
   "dependencies": {
+    "ejs": "^2.5.6",
     "express": "^4.15.2",
     "socket.io": "^1.7.3"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node server.js"
   }
 }
