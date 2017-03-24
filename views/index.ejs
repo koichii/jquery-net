@@ -19,65 +19,20 @@
   <body>
 		<h1>いらっしゃい</h1>
 
-		<h2>なまえ</h2>
-
-		<input id="name" autocomplete="off" />
-
 		<h2>さんかするへやを選ぶ</h2>
-		<% var names = Object.keys( rooms ); %>
-		<% for(var i = 0; i < names.length; i++) { %>
-			<input type="radio" name="room" value="<%= names[i] %>"><%= names[i] %></input> <br />
-		<% } %>
-      <button onClick="login()">ログイン</button> <br />
-
-    <textarea id="script"></textarea>
-    <button onClick="doScript();">実行</button>
-    <textarea id="result"></textarea>
-    <form action="">
-      <input id="m" autocomplete="off" /><button>Send</button>
-    </form>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
-		<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
-    <script>
-      var socket = io();
-      $(function () {
-        // 送信
-        $('form').submit(function(){
-          socket.emit('chat message', $('#m').val());
-          $('#m').val('');
-          return false;
-        });
-        // 受信
-        socket.on('chat message', function(msg){
-          $('#messages').append($('<li>').text(msg));
-          window.scrollTo(0, document.body.scrollHeight);
-        });
-      });
-	    // login
-	    function login() {
-			var name = $('#name').val();
-			var room = $('input[name=room]:checked').val();
-				window.open('/client' + '?name='+name+ '&room='+room);
-        socket.emit('login', {name: name, room: room, role: 'admin'} );
-	    };
-	    // script送信
-	    function doScript() {
-				var s = $('#script').val();
-        socket.emit('script', s);
-				$('#result').val('');
-	    };
-	    // script受信＆実行
-	    socket.on('script', function(s) {
-				//var doGlobal = eval;
-        //var r = doGlobal(s);
-				$('#messages').append( $('<pre>').addClass("prettyprint").text(s).appendTo($('<li>')) );
-				// .append('<pre>').addClass("prettyprint").text(s);
-				PR.prettyPrint();
-	    });
-
-    </script>
-    <ul id="messages"></ul>
+    <ul>
+      <li>
+        <a href="client?room=default">def</a>
+      </li>
+  		<% for (var room in rooms) { %>
+        <li>
+          <a href="client?room=<%= room %>"><%= room %></a>
+        </li>
+  		<% } %>
+      <li>
+        <a href="admin">New</a>
+      </li>
+    </ul>
 
   </body>
 </html>

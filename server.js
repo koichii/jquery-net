@@ -3,7 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 
-// ƒeƒ“ƒvƒŒ[ƒgƒGƒ“ƒWƒ“‚ğ EJS ‚Éİ’è
+// ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚¨ãƒ³ã‚¸ãƒ³ã‚’ EJS ã«è¨­å®š
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
@@ -15,7 +15,7 @@ var	rooms = {};
 
 app.get('/', function(req, res){
   //res.sendFile(__dirname + '/index.html');
-  res.render('index', { name: "‚È‚Ü‚¦", rooms: rooms });
+  res.render('index', { name: "ãªã¾ãˆ", rooms: rooms });
 });
 
 app.get('/client', function(req, res){
@@ -24,6 +24,10 @@ app.get('/client', function(req, res){
   console.log('name: '+ name);
   console.log('room: '+ room);
   res.render('client', { name: name, room: room });
+});
+
+app.get('/admin', function(req, res){
+  res.render('admin', { name: "ãªã¾ãˆ", rooms: rooms });
 });
 
 io.on('connection', function(socket){
