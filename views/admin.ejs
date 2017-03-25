@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>jQuery-net admin</title>
     <style>
 			input {font-size: 18px; }
 			body {font-size: 18px; }
@@ -23,13 +23,6 @@
 
 		<input id="room" autocomplete="off" />
     <button onClick="createRoom()"> room 作成 </button> <br />
-
-		<h2>さんかするへやを選ぶ</h2>
-		<% var names = Object.keys( rooms ); %>
-		<% for(var i = 0; i < names.length; i++) { %>
-			<input type="radio" name="room" value="<%= names[i] %>"><%= names[i] %></input> <br />
-		<% } %>
-      <button onClick="login()">ログイン</button> <br />
 
     <textarea id="script"></textarea>
     <button onClick="doScript();">実行</button>
