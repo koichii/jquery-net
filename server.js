@@ -11,7 +11,7 @@ var	rooms = {demo: true};
 
 app.get('/', function(req, res){
   //res.sendFile(__dirname + '/index.html');
-  res.render('index');
+  res.render('index', {rooms: rooms});
 });
 
 app.get('/client', function(req, res){
