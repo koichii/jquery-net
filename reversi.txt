@@ -1,6 +1,6 @@
 //ƒIƒZƒ‚Ìƒfƒ‚
-$("body").empty();
-$("<div id='canvas' style='position:absolute;top:50px;left:50px'></div").appendTo("body");
+$("#canvas").empty();
+$("<div id='othelo' style='position:absolute;top:50px;left:50px'></div").appendTo("#canvas");
 for (var x = 0; x < 5; x++) {
 	for (var y = 0; y < 5; y++) {
 			var w = 60;
@@ -11,7 +11,7 @@ for (var x = 0; x < 5; x++) {
 			d.css("left", x * w);
 			d.css("width", w);
 			d.css("height", w);
-			d.appendTo("#canvas");
+			d.appendTo("#othelo");
 	}
 }
 var id = 0;
@@ -26,7 +26,7 @@ for (var x = 0; x < 5; x++) {
 			d.css("left", x * w);
 			d.css("width", w);
 			d.css("height", w);
-			d.appendTo("#canvas");
+			d.appendTo("#othelo");
 	}
 }
 $(".drag").draggable({

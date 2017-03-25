@@ -7,71 +7,65 @@ var port = process.env.PORT || 3000;
 app.set('views', './views');
 app.set('view engine', 'ejs');
 
-var theRoom = 'some-room';
-var defaultNsps = '/';
-var globalinfo;
-var	users = [];
-var	rooms = {};
+var	rooms = {demo: true};
 
 app.get('/', function(req, res){
   //res.sendFile(__dirname + '/index.html');
-  res.render('index', { name: "なまえ", rooms: rooms });
+  res.render('index');
 });
 
 app.get('/client', function(req, res){
+  res.sendFile(__dirname + '/views/client.html');
+/*
 	var name = req.query.name;
 	var room = req.query.room;
   console.log('name: '+ name);
   console.log('room: '+ room);
   res.render('client', { name: name, room: room });
+*/
 });
 
 app.get('/admin', function(req, res){
-  res.render('admin', { name: "なまえ", rooms: rooms });
+  res.render('admin');
 });
 
 io.on('connection', function(socket){
+  // connected
+  socket.emit('connected', socket.id);
+  console.log('connected', socket.id);
 
-  io.emit('chat message', "welcome:" + socket.id);
-
-  console.log('user '+ socket.id +' connected');
-	users[socket.id] = {};
-
-	socket.on('login', function(login) {
-    var name = login.name || "unknown";
-    var room = login.room || "default";
-		var role = login.role || "guest";
-    users[socket.id].name = login.name;
-    users[socket.id].room = room;
-    users[socket.id].role = role;
+  // join the room
+  function joinRoom(room){
     socket.join(room);
-		if (! rooms[room]) {
-			rooms[room] = {id: socket.id, name: room};
-		}
-    io.emit('chat message', 'login:' + name);
-
-		console.log('LOGIN:', users);
-		console.log('ROOMS:', rooms);
-
-  });
-/*
+    socket.emit('joind', room);
+    console.log('joind', room);
+    //console.log(io.nsps["/"].adapter.rooms);
+  }
+  // client trys to join the room
 	socket.on('join', function(room) {
-    users[socket.id].room = room;
-    socket.join(room);
-    io.emit('chat message', 'join:@'+ room);
+		if ( rooms[room] ) {
+      joinRoom(room);
+    } else {
+      console.log('Cannot join:', room);
+		}
   });
-*/
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  console.log('USERS:', users);
+  // admin trys to create the room
+  socket.on('admin-createRoom', function(room) {
+  	if ( rooms[room] ) {
+      console.log('Cannot creates:', room);
+    } else {
+      rooms[room] = {socket: socket};
+      console.log('createed:', room);
+      joinRoom(room);
+  	}
   });
-
-  socket.on('script', function(s){
-    io.emit('script', s);
+  // script recive and send {from:, to:, script}
+  socket.on('script', function(s) {
+    io.to(s.to).emit('script', s);
+    console.log('script:', s);
   });
-
+  // disconnected
   socket.on('disconnect', function(){
-    delete users[socket.id];
     console.log('user '+ socket.id +' disconnected');
   });
 

@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>JQuery-net chat welcome</title>
     <style>
 			input {font-size: 18px; }
 			body {font-size: 18px; }
@@ -21,16 +21,13 @@
 
 		<h2>さんかするへやを選ぶ</h2>
     <ul>
-      <li>
-        <a href="client?room=default">def</a>
-      </li>
   		<% for (var room in rooms) { %>
         <li>
           <a href="client?room=<%= room %>"><%= room %></a>
         </li>
   		<% } %>
       <li>
-        <a href="admin">New</a>
+        <a href="admin">new</a>
       </li>
     </ul>
 

@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <title>jQuery-net Client Demo</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font: 16px Helvetica, Arial; }
+      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
+      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages li { padding: 5px 10px; }
+      #messages li:nth-child(odd) { background: #eee; }
+      #messages { margin-bottom: 40px }
+    </style>
+  </head>
+  <body>
+    <h1> ルーム： <span id="myRoom"></span> </h1>
+    <h1> ID:  <span id="myId"></span> </h1>
+    <div id="canvas" style="width:80%;height:45em;border-style:solid;border-width:1px">aaaa</div>
+    <textarea id="script" style="width:80%;height:4em">var i=1;</textarea>
+    <button onClick="doScript();">実行</button>
+    <ul id="messages"></ul>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+		<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=css&amp;skin=sunburst"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+    <script>
+      var socket = io();
+      var myRoom;
+      var myId;
+      $(function () {
+        //
+        myRoom = decodeURIComponent(location.search.match(/room=(.*?)(&|$)/)[1]);
+        socket.emit('join', myRoom);
+        // connected and know my own Id
+        socket.on('connected', function(id) {
+          myId = id;
+          $("#myId").text(myId);
+        });
+        socket.on('joind', function(room) {
+          myRoom = room;
+          $("#myRoom").text(myRoom);
+        });
+        // script受信＆実行
+        socket.on('script', function(s) {
+          // script の実行
+          var doGlobal = eval;
+          doGlobal(s.script);
+          // script の表示
+          $('#messages').append( $('<pre>').addClass("prettyprint").text(s.script).appendTo($('<li>')) );
+          PR.prettyPrint();
+        });
+      });
+      // script送信
+      function doScript() {
+        var s = $('#script').val();
+        socket.emit('script', {from: myId, to: myRoom, script: s});
+        //$('#result').val('');
+      };
+    </script>
+  </body>
+</html>
