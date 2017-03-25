@@ -18,9 +18,9 @@
     <h1> ルーム： <span id="myRoom"></span> </h1>
     <h1> ID:  <span id="myId"></span> </h1>
 
-    <div id="createRoom" display=hidden>
-      ルーム名：<input id="room" autocomplete="off" />
-      <button onClick="createRoom()"> room 作成 </button> <br />
+    <div id="createRoom" style="display:none">
+      ルーム名：<input id="newRoom" autocomplete="off" />
+      <button onClick="createRoom()"> room 作成 </button>
     </div>
     <div id="canvas" style="width:80%;height:45em;border-style:solid;border-width:1px">aaaa</div>
     <textarea id="script" style="width:80%;height:4em">var i=1;</textarea>
@@ -37,13 +37,22 @@
       var myRoom, myRole, myId;
       $(function () {
         //
-        myRoom = decodeURIComponent(location.search.match(/room=(.*?)(&|$)/)[1]);
-        myRole = decodeURIComponent(location.search.match(/role=(.*?)(&|$)/)[1]);
+        var vars = [];
+        var hash  = location.search.slice(1).split('&');
+        for (var i = 0; i < hash.length; i++) {
+            var array = hash[i].split('=');    //keyと値に分割。
+            //vars.push(array[0]);    //末尾にクエリ文字列のkeyを挿入。
+            vars[array[0]] = array[1];    //先ほど確保したkeyに、値を代入。
+        }
+
+        //search = location.search;
+        //myRoom = decodeURIComponent(location.search.match(/room=(.*?)(&|$)/)[1]);
+        //myRole = decodeURIComponent(location.search.match(/role=(.*?)(&|$)/)[1]);
         //
-        if (myRole == "admin") {
+        if (vars["role"] == "admin") {
           $("#createRoom").show();
         } else {
-          socket.emit('join', myRoom);
+          socket.emit('join', vars["room"]);
         }
         // connected and know my own Id
         socket.on('connected', function(id) {
@@ -68,8 +77,13 @@
       function doScript() {
         var s = $('#script').val();
         socket.emit('script', {from: myId, to: myRoom, script: s});
-        //$('#result').val('');
       };
+      // room 作成
+      function createRoom() {
+        var room = $('#newRoom').val();
+        socket.emit('admin-createRoom', room);
+      };
+
     </script>
   </body>
 </html>

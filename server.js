@@ -25,10 +25,6 @@ app.get('/client', function(req, res){
 */
 });
 
-app.get('/admin', function(req, res){
-	res.render('admin');
-});
-
 io.on('connection', function(socket){
 	// connected
 	socket.emit('connected', socket.id);
